@@ -1,5 +1,6 @@
 const express = require('express');
-const {connectToDb, getDb } = require('./db')
+const {connectToDb, getDb } = require('./db');
+const { ObjectId } = require('mongodb');
 
 
 //init app & middleware
@@ -35,3 +36,24 @@ app.get('/books', (req, res) =>{
     })
     
 })
+
+app.get('/books/:id', (req,res) =>{
+    if(ObjectId.isValid(req.params.id)){
+        db.collection('books')
+        .findOne({_id: new ObjectId(req.params.id)})
+    .then(doc =>{
+        res.status(200).json(doc)
+
+    }).catch(err =>{
+        res.status(500).json({error:'Could not find request'})
+    })
+    // req.params.id
+    }else{
+        res.status(500).json({error:'Not valid doc id'})
+    }
+
+    
+})
+
+//setting up post request handler
+app.post('/books', (req,res))
